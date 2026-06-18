@@ -1,0 +1,75 @@
+project:
+  name: "Green AI — SciSci Econometrics (CRIO Replication Package)"
+  # Paths are relative to the replication_package/ root directory
+  base_dir: "."
+  dataset: "data/dataset_a_enriched.csv"
+  output_dir: "output/figures"
+  manuscript_dir: "output/figures"
+  current_year: 2026
+
+variables:
+  theme_a:
+    name: "is_governance"
+    label: "Governance Focus"
+    terms:
+      - "governance"
+      - "ethic"
+      - "sustainability policy"
+      - "regulation"
+      - "esg"
+      - "socioeconomic"
+      - "accountability"
+      
+  theme_b:
+    name: "is_capability"
+    label: "Technical Capability"
+    terms:
+      - "machine learning"
+      - "deep learning"
+      - "algorithm"
+      - "edge computing"
+      - "federated learning"
+      - "optimization"
+      - "hardware"
+      - "energy consumption"
+      - "carbon footprint"
+
+  controls:
+    - col: "is_international"
+      label: "International Collab"
+      compute: "affiliations"
+    - col: "author_count"
+      label: "Author Count"
+      compute: "authors"
+    - col: "norm_degree_z"
+      label: "Network Centrality"
+      compute: "degree"
+    - col: "paper_age"
+      label: "Paper Age (years)"
+      compute: "year"
+
+hypotheses:
+  h1_silo:
+    name: "Structural Silo Hypothesis"
+    description: >
+      Governance research is non-uniformly distributed across thematic clusters,
+      indicating structural siloing rather than even integration.
+    test: "chi_square"
+    theme: "theme_a"
+
+  h2_interaction:
+    name: "Boundary Spanning Effect (Integration Neutrality)"
+    description: >
+      While Technical and Governance foci may independently boost citations,
+      their interaction term reveals neither a significant penalty nor reward,
+      suggesting structural integration neutrality rather than an active cost.
+    test: "causal_forest_psm"
+    dv: "log_citations"
+
+  h3_breakthrough:
+    name: "Breakthrough Asymmetry"
+    description: >
+      Governance focus does not predict breakthrough impact (top 10% citations)
+      once paper age and network position are controlled.
+    test: "logistic_interaction"
+    dv: "is_top_10"
